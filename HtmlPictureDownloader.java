@@ -19,10 +19,13 @@ public class HtmlPictureDownloader {
     private static final String HTML_FILE = "source.html";
 
     public static void main(String[] args) throws IOException {
+       Long startTime = System.currentTimeMillis();
        HtmlPictureDownloader downloader = new HtmlPictureDownloader();
        String htmlSource = downloader.readHtmlFile(HTML_FILE);
        List<String> allPictureLinks = downloader.getAllPictureLinks(htmlSource);
        downloader.download(allPictureLinks);
+       Long endTime = System.currentTimeMillis();
+       System.out.println("Time took to finish downloading: " + (endTime - startTime));
     }
 
     private String readHtmlFile(String htmlFile) throws IOException {
@@ -33,6 +36,8 @@ public class HtmlPictureDownloader {
         while((readLine = reader.readLine()) != null){
             content.append(readLine);
         }
+        System.out.println("Finish read html file");
+        System.out.println(content);
         return content.toString();
     }
 
@@ -49,15 +54,20 @@ public class HtmlPictureDownloader {
     }
 
     private void download(List<String> allPictureLinks) throws IOException {
+        System.out.println("start to download picture...");
         for(int i = 0; i < allPictureLinks.size(); i++){
             try{
                 BufferedImage image  = ImageIO.read(new URL(allPictureLinks.get(i)));
                 String fileName = "Maya"  + i + ".jpg" ;
                 File outputImage = new File(fileName);
                 ImageIO.write(image,"jpg", outputImage);
+                System.out.println("Downloaded picture: " + fileName);
             } catch(IllegalArgumentException ex){
+                continue;
+            } catch(FileNotFoundException ex){
                 continue;
             }
         }
+        System.out.println("Finish downloading picture");
     }
 }
