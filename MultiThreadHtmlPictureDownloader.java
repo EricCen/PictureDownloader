@@ -25,24 +25,11 @@ public class MultiThreadHtmlPictureDownloader {
        String htmlSource = downloader.readHtmlFile(HTML_FILE);
        allPictureLinks = downloader.getAllPictureLinks(htmlSource);
         ExecutorService pool = Executors.newFixedThreadPool(5);
-       Thread t1 = new Thread(new ImageDownloadThread());
-       Thread t2 = new Thread(new ImageDownloadThread());
-        Thread t3 = new Thread(new ImageDownloadThread());
-        Thread t4 = new Thread(new ImageDownloadThread());
-        Thread t5 = new Thread(new ImageDownloadThread());
-     /* for(int i = 0; i < 5; i++){
-          Thread t = new Thread(new ImageDownloadThread());
-          t.start();
-          t.join();
-      }*/
-
-
-        pool.execute(t1);
-        pool.execute(t2);
-        pool.execute(t3);
-        pool.execute(t4);
-        pool.execute(t5);
-
+        for(int i = 0; i < 5; i++){
+           Thread thread = new Thread(new ImageDownloadThread());
+           pool.execute(thread);
+        }
+       
         pool.shutdown();
 
         try {
@@ -53,9 +40,6 @@ public class MultiThreadHtmlPictureDownloader {
 
         Long endTime = System.currentTimeMillis();
         System.out.println("Time took to finish downloading: " + (endTime - startTime));
-     /*  downloader.download(allPictureLinks);*/
-      /* Long endTime = System.currentTimeMillis();
-       System.out.println("Time took to finish downloading: " + (endTime - startTime));*/
     }
 
     private String readHtmlFile(String htmlFile) throws IOException {
@@ -82,22 +66,4 @@ public class MultiThreadHtmlPictureDownloader {
         }
         return allPictureLinks;
     }
-
-   /* private void download(List<String> allPictureLinks) throws IOException {
-        System.out.println("start to download picture...");
-        for(int i = 0; i < allPictureLinks.size(); i++){
-            try{
-                BufferedImage image  = ImageIO.read(new URL(allPictureLinks.get(i)));
-                String fileName = "Maya"  + i + ".jpg" ;
-                File outputImage = new File(fileName);
-                ImageIO.write(image,"jpg", outputImage);
-                System.out.println("Downloaded picture: " + fileName);
-            } catch(IllegalArgumentException ex){
-                continue;
-            } catch(FileNotFoundException ex){
-                continue;
-            }
-        }
-        System.out.println("Finish downloading picture");
-    }*/
 }
